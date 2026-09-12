@@ -37,6 +37,8 @@
   --color-bubble-blue: #edf6fe;
   --color-bubble-purple: #f6f6fe;
   --color-bubble-peach: #fef3ed;
+  /* Home screen "Next up" card background. */
+  --color-bubble-mint: #eef6e7;
 
   /* Neutrals */
   --color-text-primary: #0d132b;
