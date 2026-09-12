@@ -21,6 +21,8 @@
   /* Brand */
   --color-purple: #6c4ef5;
   --color-deep-purple: #5b3bf6;
+  /* Lighter end of the auth CTA gradient (see .bg-brand-gradient below). */
+  --color-purple-light: #7b5cf3;
   --color-blue: #4d8bff;
   --color-green: #21c16b;
 
@@ -96,4 +98,26 @@
 }
 @utility caption {
   @apply font-poppins-regular text-caption text-text-secondary;
+}
+
+/*
+ * Auth call to action: deep purple easing into a lighter violet, left to
+ * right. React Native only understands a plain `linear-gradient()`, so this
+ * is written out instead of using Tailwind's `bg-linear-to-r` + `from-*`
+ * utilities, which compile to CSS custom properties native cannot resolve.
+ *
+ * This utility only paints the gradient on web. NativeWind's native CSS
+ * engine (react-native-css) compiles this `linear-gradient()` into an AST,
+ * but its native runtime has no resolver for that AST and crashes on
+ * iOS/Android instead of rendering it. Until that's fixed upstream,
+ * `PrimaryButton` never applies this className on native — it paints the
+ * gradient itself via React Native's own `experimental_backgroundImage`
+ * style prop. See `nativeGradientStyle` in `src/components/PrimaryButton.tsx`.
+ */
+@utility bg-brand-gradient {
+  background-image: linear-gradient(
+    to right,
+    var(--color-deep-purple),
+    var(--color-purple-light)
+  );
 }

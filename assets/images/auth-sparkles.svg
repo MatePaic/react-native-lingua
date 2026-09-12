@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="254" height="206" viewBox="0 0 254 206">
+  <!-- Four-point twinkles that frame the mascot, placed to match the design. -->
+  <path fill="#FF8A00" transform="translate(46 66) scale(0.5)" d="M0-10c.6 5.5 4.5 9.4 10 10-5.5.6-9.4 4.5-10 10-.6-5.5-4.5-9.4-10-10 5.5-.6 9.4-4.5 10-10z"/>
+  <path fill="#4D8BFF" transform="translate(241 69) scale(0.58)" d="M0-10c.6 5.5 4.5 9.4 10 10-5.5.6-9.4 4.5-10 10-.6-5.5-4.5-9.4-10-10 5.5-.6 9.4-4.5 10-10z"/>
+  <path fill="#FFC800" transform="translate(229 102) scale(0.58)" d="M0-10c.6 5.5 4.5 9.4 10 10-5.5.6-9.4 4.5-10 10-.6-5.5-4.5-9.4-10-10 5.5-.6 9.4-4.5 10-10z"/>
+</svg>

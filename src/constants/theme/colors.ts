@@ -8,6 +8,7 @@ export const colors = {
   brand: {
     purple: "#6C4EF5",
     deepPurple: "#5B3BF6",
+    purpleLight: "#7B5CF3",
     blue: "#4D8BFF",
     green: "#21C16B",
   },

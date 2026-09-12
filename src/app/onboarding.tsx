@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
-import { Text, View } from "react-native";
+import { router } from "expo-router";
+import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { PrimaryButton } from "@/components/PrimaryButton";
@@ -10,7 +11,10 @@ import { colors } from "@/constants/theme";
 export default function Onboarding() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.neutral.background }}>
-      <View className="flex-1 px-6 pb-4 pt-4">
+      <ScrollView
+        className="flex-1 px-6 pb-4 pt-4"
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         {/* Logo */}
         <View className="flex-row items-center justify-center">
           <Image
@@ -60,8 +64,8 @@ export default function Onboarding() {
           />
         </View>
 
-        <PrimaryButton label="Get Started" />
-      </View>
+        <PrimaryButton label="Get Started" onPress={() => router.push("/sign-up")} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
