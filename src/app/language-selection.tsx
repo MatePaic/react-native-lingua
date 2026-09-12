@@ -10,20 +10,37 @@ import { PrimaryButton } from "@/components/PrimaryButton";
 import { images } from "@/constants/images";
 import { colors } from "@/constants/theme";
 import { languages } from "@/data/languages";
-import type { LanguageId } from "@/types/learning";
+import type { Language, LanguageId } from "@/types/learning";
 
 export default function LanguageSelection() {
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<LanguageId>("spanish");
 
   const query = search.trim().toLowerCase();
-  const results = query
-    ? languages.filter(
-        (language) =>
-          language.name.toLowerCase().includes(query) ||
-          language.nativeName.toLowerCase().includes(query),
-      )
-    : languages.filter((language) => language.popular);
+  const matchesQuery = (language: Language) =>
+    language.name.toLowerCase().includes(query) ||
+    language.nativeName.toLowerCase().includes(query);
+
+  const searchResults = query ? languages.filter(matchesQuery) : null;
+  const popularLanguages = languages.filter((language) => language.popular);
+  const otherLanguages = languages.filter((language) => !language.popular);
+
+  const renderSection = (title: string, list: Language[], className = "") => (
+    <View className={className}>
+      <Text className="caption font-poppins-semibold! uppercase tracking-wide">{title}</Text>
+
+      <View className="mt-3">
+        {list.map((language) => (
+          <LanguageCard
+            key={language.id}
+            language={language}
+            selected={language.id === selectedId}
+            onPress={() => setSelectedId(language.id)}
+          />
+        ))}
+      </View>
+    </View>
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.neutral.background }}>
@@ -58,26 +75,20 @@ export default function LanguageSelection() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <Text className="caption font-poppins-semibold! uppercase tracking-wide">
-          {query ? "Search results" : "Popular"}
-        </Text>
-
-        <View className="mt-3">
-          {results.length ? (
-            results.map((language) => (
-              <LanguageCard
-                key={language.id}
-                language={language}
-                selected={language.id === selectedId}
-                onPress={() => setSelectedId(language.id)}
-              />
-            ))
+        {searchResults ? (
+          searchResults.length ? (
+            renderSection("Search results", searchResults)
           ) : (
             <Text className="body-medium mt-6 text-center text-text-secondary!">
               No languages match &ldquo;{search}&rdquo;.
             </Text>
-          )}
-        </View>
+          )
+        ) : (
+          <>
+            {renderSection("Popular", popularLanguages)}
+            {renderSection("More languages", otherLanguages, "mt-6")}
+          </>
+        )}
 
         <PrimaryButton
           label="Confirm"

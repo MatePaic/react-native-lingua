@@ -1,5 +1,7 @@
 import type { Lesson } from "@/types/learning";
 
+import { getUnitsByLanguage } from "./units";
+
 /**
  * Hardcoded lessons, grouped by `unitId`/`languageId`. Each lesson carries
  * everything a lesson screen or AI teacher session needs: a goal,
@@ -872,9 +874,7 @@ export const getLessonsByUnit = (unitId: string) =>
     .sort((a, b) => a.order - b.order);
 
 export const getLessonsByLanguage = (languageId: string) =>
-  lessons
-    .filter((lesson) => lesson.languageId === languageId)
-    .sort((a, b) => a.order - b.order);
+  getUnitsByLanguage(languageId).flatMap((unit) => getLessonsByUnit(unit.id));
 
 export const getLessonById = (id: string) =>
   lessons.find((lesson) => lesson.id === id);
