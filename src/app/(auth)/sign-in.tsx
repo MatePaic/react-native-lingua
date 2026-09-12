@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link, router } from "expo-router";
+import { useSignIn } from "@clerk/expo";
+import { Link } from "expo-router";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -10,10 +11,39 @@ import { PrimaryButton } from "@/components/PrimaryButton";
 import { SocialAuthOptions } from "@/components/SocialAuthOptions";
 import { VerificationModal } from "@/components/VerificationModal";
 import { colors } from "@/constants/theme";
+import { clerkErrorMessage, navigateAfterAuth } from "@/lib/clerk";
 
 export default function SignIn() {
+  const { signIn, fetchStatus } = useSignIn();
   const [email, setEmail] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
+
+  const handleSignIn = async () => {
+    setFormError(null);
+
+    const { error } = await signIn.emailCode.sendCode({ emailAddress: email });
+    if (error) {
+      setFormError(clerkErrorMessage(error));
+      return;
+    }
+
+    setVerifyError(null);
+    setIsVerifying(true);
+  };
+
+  const handleVerify = async (code: string) => {
+    const { error } = await signIn.emailCode.verifyCode({ code });
+    if (error) {
+      setVerifyError(clerkErrorMessage(error));
+      return;
+    }
+
+    if (signIn.status === "complete") {
+      await signIn.finalize({ navigate: navigateAfterAuth });
+    }
+  };
 
   return (
     <SafeAreaView style={styles.screen} edges={["top", "bottom"]}>
@@ -41,12 +71,15 @@ export default function SignIn() {
           autoComplete="email"
         />
 
+        {formError ? <Text className="body-small mt-3 text-error!">{formError}</Text> : null}
+
         <PrimaryButton
           label="Log In"
           gradient
           showChevron={false}
           className="mt-5"
-          onPress={() => setIsVerifying(true)}
+          disabled={fetchStatus === "fetching"}
+          onPress={handleSignIn}
         />
 
         <View className="mt-6">
@@ -64,11 +97,9 @@ export default function SignIn() {
       <VerificationModal
         visible={isVerifying}
         email={email}
+        error={verifyError}
         onClose={() => setIsVerifying(false)}
-        onVerified={() => {
-          setIsVerifying(false);
-          router.replace("/");
-        }}
+        onSubmit={handleVerify}
       />
     </SafeAreaView>
   );

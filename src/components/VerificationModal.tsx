@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -17,24 +17,44 @@ type VerificationModalProps = {
   visible: boolean;
   /** Shown in the copy so the user knows where the code was sent. */
   email: string;
+  /** Set when the last submitted code was rejected by Clerk. */
+  error?: string | null;
   onClose: () => void;
-  /** Called as soon as the last digit is typed. */
-  onVerified: () => void;
+  /** Called as soon as the last digit is typed, with the code to verify. */
+  onSubmit: (code: string) => void;
 };
 
 /**
- * Bottom sheet that asks for the 6-digit code we "emailed" the user. The boxes
- * are display only — a single hidden input holds the code, which is a lot
- * simpler than keeping six inputs and their refs in sync.
+ * Bottom sheet that asks for the 6-digit code Clerk emailed the user. The
+ * boxes are display only — a single hidden input holds the code, which is a
+ * lot simpler than keeping six inputs and their refs in sync.
  */
 export function VerificationModal({
   visible,
   email,
+  error,
   onClose,
-  onVerified,
+  onSubmit,
 }: VerificationModalProps) {
   const [code, setCode] = useState("");
   const inputRef = useRef<TextInput>(null);
+
+  // A rejected code clears the boxes so the user can retry immediately. Reset
+  // during render (rather than in an effect) per
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  const [lastHandledError, setLastHandledError] = useState(error);
+  if (error !== lastHandledError) {
+    setLastHandledError(error);
+    if (error) {
+      setCode("");
+    }
+  }
+
+  useEffect(() => {
+    if (error) {
+      inputRef.current?.focus();
+    }
+  }, [error]);
 
   const handleChangeText = (text: string) => {
     const digits = text.replace(/[^0-9]/g, "").slice(0, CODE_LENGTH);
@@ -42,7 +62,7 @@ export function VerificationModal({
 
     if (digits.length === CODE_LENGTH) {
       Keyboard.dismiss();
-      onVerified();
+      onSubmit(digits);
     }
   };
 
@@ -95,9 +115,13 @@ export function VerificationModal({
             ))}
           </Pressable>
 
-          <Text className="caption mt-4 text-center">
-            Didn&apos;t get it? Check your spam folder.
-          </Text>
+          {error ? (
+            <Text className="body-small mt-4 text-center text-error!">{error}</Text>
+          ) : (
+            <Text className="caption mt-4 text-center">
+              Didn&apos;t get it? Check your spam folder.
+            </Text>
+          )}
 
           <TextInput
             ref={inputRef}
