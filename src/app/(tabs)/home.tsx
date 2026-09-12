@@ -75,7 +75,7 @@ export default function Home() {
       iconBackground: "bg-deep-purple",
       title: "Lesson",
       subtitle: currentLesson?.title ?? "Start your first lesson",
-      done: true,
+      done: currentLesson?.status === "completed",
     },
     {
       id: "conversation",
