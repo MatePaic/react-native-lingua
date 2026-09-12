@@ -10,11 +10,15 @@ import { PrimaryButton } from "@/components/PrimaryButton";
 import { images } from "@/constants/images";
 import { colors } from "@/constants/theme";
 import { languages } from "@/data/languages";
+import { useLanguageStore } from "@/store/language-store";
 import type { Language, LanguageId } from "@/types/learning";
 
 export default function LanguageSelection() {
+  const selectedLanguageId = useLanguageStore((state) => state.selectedLanguageId);
+  const setSelectedLanguage = useLanguageStore((state) => state.setSelectedLanguage);
+
   const [search, setSearch] = useState("");
-  const [selectedId, setSelectedId] = useState<LanguageId>("spanish");
+  const [selectedId, setSelectedId] = useState<LanguageId>(selectedLanguageId ?? "spanish");
 
   const query = search.trim().toLowerCase();
   const matchesQuery = (language: Language) =>
@@ -93,7 +97,10 @@ export default function LanguageSelection() {
         <PrimaryButton
           label="Confirm"
           className="mt-2"
-          onPress={() => router.back()}
+          onPress={() => {
+            setSelectedLanguage(selectedId);
+            router.replace("/");
+          }}
         />
 
         <Image
