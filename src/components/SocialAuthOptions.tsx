@@ -5,6 +5,7 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { images } from "@/constants/images";
+import { posthog } from "@/lib/posthog";
 
 const PROVIDERS = [
   { label: "Continue with Google", icon: images.socialGoogle, strategy: "oauth_google" },
@@ -25,6 +26,9 @@ export function SocialAuthOptions() {
     try {
       const { createdSessionId } = await startSSOFlow({ strategy });
       if (createdSessionId) {
+        posthog?.capture("social_sign_in_completed", {
+          provider: strategy.replace("oauth_", ""),
+        });
         router.replace("/");
       }
       // No createdSessionId means the user cancelled — nothing to do.

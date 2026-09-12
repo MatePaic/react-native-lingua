@@ -1,10 +1,16 @@
-import { useEffect } from "react";
-import { ClerkProvider } from "@clerk/expo";
+import { ClerkProvider, useAuth, useUser } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import {
+  PostHogErrorBoundary,
+  PostHogProvider,
+  usePostHog,
+} from "posthog-react-native";
+import { useEffect, useRef } from "react";
 
+import { posthog } from "@/lib/posthog";
 import "../global.css";
 
 SplashScreen.preventAutoHideAsync();
@@ -16,6 +22,51 @@ if (!publishableKey) {
 }
 
 const clerkPublishableKey: string = publishableKey;
+
+function PostHogIdentity() {
+  const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
+  const client = usePostHog();
+  const identifiedUserId = useRef<string | null>(null);
+  const hasResolvedClerkState = useRef(false);
+
+  useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    if (!hasResolvedClerkState.current) {
+      client.reset();
+      hasResolvedClerkState.current = true;
+    }
+
+    if (!isSignedIn || !user?.id) {
+      if (identifiedUserId.current) {
+        client.reset();
+        identifiedUserId.current = null;
+      }
+      return;
+    }
+
+    if (identifiedUserId.current === user.id) {
+      return;
+    }
+
+    if (identifiedUserId.current) {
+      client.reset();
+    }
+
+    client.identify(user.id, {
+      ...(user.primaryEmailAddress?.emailAddress
+        ? { email: user.primaryEmailAddress.emailAddress }
+        : {}),
+      ...(user.fullName ? { name: user.fullName } : {}),
+    });
+    identifiedUserId.current = user.id;
+  }, [client, isLoaded, isSignedIn, user]);
+
+  return null;
+}
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -35,9 +86,18 @@ export default function RootLayout() {
     return null;
   }
 
+  const router = <Stack screenOptions={{ headerShown: false }} />;
+
   return (
     <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache}>
-      <Stack screenOptions={{ headerShown: false }} />
+      {posthog ? (
+        <PostHogProvider client={posthog}>
+          <PostHogIdentity />
+          <PostHogErrorBoundary>{router}</PostHogErrorBoundary>
+        </PostHogProvider>
+      ) : (
+        router
+      )}
     </ClerkProvider>
   );
 }

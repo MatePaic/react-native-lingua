@@ -10,6 +10,7 @@ import { PrimaryButton } from "@/components/PrimaryButton";
 import { images } from "@/constants/images";
 import { colors } from "@/constants/theme";
 import { languages } from "@/data/languages";
+import { posthog } from "@/lib/posthog";
 import { useLanguageStore } from "@/store/language-store";
 import type { Language, LanguageId } from "@/types/learning";
 
@@ -99,6 +100,9 @@ export default function LanguageSelection() {
           className="mt-2"
           onPress={() => {
             setSelectedLanguage(selectedId);
+            posthog?.capture("learning_language_selected", {
+              language_id: selectedId,
+            });
             router.replace("/");
           }}
         />
