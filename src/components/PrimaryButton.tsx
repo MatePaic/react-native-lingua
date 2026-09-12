@@ -9,6 +9,7 @@ type PrimaryButtonProps = {
   gradient?: boolean;
   /** The onboarding CTA ends with a chevron, the auth CTAs don't. */
   showChevron?: boolean;
+  disabled?: boolean;
   className?: string;
 };
 
@@ -37,6 +38,7 @@ export function PrimaryButton({
   onPress,
   gradient = false,
   showChevron = true,
+  disabled = false,
   className = "",
 }: PrimaryButtonProps) {
   // `bg-brand-gradient` must never reach native — NativeWind crashes just
@@ -52,8 +54,9 @@ export function PrimaryButton({
       accessibilityRole="button"
       activeOpacity={0.9}
       onPress={onPress}
+      disabled={disabled}
       style={gradient ? nativeGradientStyle : undefined}
-      className={`h-16 flex-row items-center rounded-2xl px-7 ${backgroundClassName} ${className}`}
+      className={`h-16 flex-row items-center rounded-2xl px-7 ${backgroundClassName} ${disabled ? "opacity-60" : ""} ${className}`}
     >
       <Text className="flex-1 text-center font-poppins-semibold text-h4 text-background">
         {label}
