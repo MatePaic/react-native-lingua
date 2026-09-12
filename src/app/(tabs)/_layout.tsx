@@ -1,8 +1,26 @@
-import { Tabs } from "expo-router";
+import { useAuth } from "@clerk/expo";
+import { Redirect, Tabs } from "expo-router";
 
 import { CustomTabBar } from "@/components/CustomTabBar";
+import { useLanguageStore } from "@/store/language-store";
 
 export default function TabsLayout() {
+  const { isLoaded, isSignedIn } = useAuth();
+  const hasHydrated = useLanguageStore((state) => state.hasHydrated);
+  const selectedLanguageId = useLanguageStore((state) => state.selectedLanguageId);
+
+  if (!isLoaded || !hasHydrated) {
+    return null;
+  }
+
+  if (!isSignedIn) {
+    return <Redirect href="/onboarding" />;
+  }
+
+  if (!selectedLanguageId) {
+    return <Redirect href="/language-selection" />;
+  }
+
   return (
     <Tabs
       tabBar={(props) => <CustomTabBar {...props} />}
