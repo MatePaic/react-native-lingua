@@ -13,9 +13,12 @@ import iconEyeOff from "@/assets/images/icon-eye-off.svg";
 import mascotAuth from "@/assets/images/mascot-auth.png";
 import mascotLogo from "@/assets/images/moscot-logo.png";
 import mascotWelcome from "@/assets/images/mascot-welcome.png";
+import palace from "@/assets/images/palace.png";
 import socialApple from "@/assets/images/social-apple.svg";
 import socialFacebook from "@/assets/images/social-facebook.svg";
 import socialGoogle from "@/assets/images/social-google.svg";
+import streakFire from "@/assets/images/streak-fire.png";
+import treasure from "@/assets/images/treasure.png";
 import type { LanguageId } from "@/types/learning";
 
 /**
@@ -33,6 +36,15 @@ export const images = {
   socialFacebook,
   socialApple,
   earth,
+  palace,
+  treasure,
+  streakFire,
+  /**
+   * No bundled illustration for the AI teacher yet, so this hotlinks a
+   * portrait from Unsplash as a placeholder (see AGENTS.md's Image Rule).
+   */
+  aiTeacherAvatar:
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=faces",
   /**
    * Bundled locally instead of hotlinked from a flag CDN so the language
    * selection screen never shows blank flags on a slow or restricted
