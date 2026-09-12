@@ -5,6 +5,19 @@
 @import "nativewind/theme";
 
 @theme {
+  /*
+   * NativeWind renders 1rem as 14dp on native, so every token below is
+   * declared in px to stay 1:1 with the design files. `--spacing` drives the
+   * padding, margin, width, height and gap scale (p-4 = 4px x 4 = 16px).
+   */
+  --spacing: 4px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+
   /* Brand */
   --color-purple: #6c4ef5;
   --color-deep-purple: #5b3bf6;
@@ -17,6 +30,11 @@
   --color-streak: #ff8a00;
   --color-error: #ff4d4f;
   --color-info: #4d8bff;
+
+  /* Speech bubbles (onboarding illustration) */
+  --color-bubble-blue: #edf6fe;
+  --color-bubble-purple: #f6f6fe;
+  --color-bubble-peach: #fef3ed;
 
   /* Neutrals */
   --color-text-primary: #0d132b;
@@ -32,21 +50,21 @@
   --font-poppins-bold: "Poppins-Bold";
 
   /* Type scale */
-  --text-h1: 2rem; /* 32px */
+  --text-h1: 32px;
   --text-h1--line-height: 1.2;
-  --text-h2: 1.5rem; /* 24px */
+  --text-h2: 24px;
   --text-h2--line-height: 1.3;
-  --text-h3: 1.25rem; /* 20px */
+  --text-h3: 20px;
   --text-h3--line-height: 1.3;
-  --text-h4: 1rem; /* 16px */
+  --text-h4: 16px;
   --text-h4--line-height: 1.4;
-  --text-body-lg: 1rem; /* 16px */
+  --text-body-lg: 16px;
   --text-body-lg--line-height: 1.6;
-  --text-body-md: 0.875rem; /* 14px */
+  --text-body-md: 14px;
   --text-body-md--line-height: 1.6;
-  --text-body-sm: 0.8125rem; /* 13px */
+  --text-body-sm: 13px;
   --text-body-sm--line-height: 1.6;
-  --text-caption: 0.6875rem; /* 11px */
+  --text-caption: 11px;
   --text-caption--line-height: 1.4;
 }
 
