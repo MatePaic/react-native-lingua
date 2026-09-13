@@ -48,7 +48,7 @@ export default function Learn() {
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={{ flex: 1, backgroundColor: colors.neutral.background }}>
       <View className="flex-row items-start px-6 pt-4">
-        <BackButton />
+        <BackButton fallbackHref="/(tabs)/home" />
 
         <View className="ml-3 flex-1">
           <Text className="heading-3 font-poppins-semibold!" numberOfLines={1}>

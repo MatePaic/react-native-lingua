@@ -29,8 +29,10 @@ export function LessonCard({ lesson, onPress }: LessonCardProps) {
     <TouchableOpacity
       accessibilityRole="button"
       accessibilityLabel={lesson.title}
+      accessibilityState={{ disabled: isLocked }}
       activeOpacity={0.8}
-      onPress={onPress}
+      onPress={isLocked ? undefined : onPress}
+      disabled={isLocked}
       className={`mb-3 flex-row items-center rounded-2xl border px-4 py-4 ${
         isInProgress ? "border-2 border-deep-purple bg-deep-purple/5" : "border-border"
       }`}

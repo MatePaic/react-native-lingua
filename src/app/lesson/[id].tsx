@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams, type Href } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -43,7 +43,8 @@ const FEEDBACK = [
  */
 export default function LessonDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const lesson = id ? getLessonById(id) : undefined;
+  const foundLesson = id ? getLessonById(id) : undefined;
+  const lesson = foundLesson?.status === "locked" ? undefined : foundLesson;
 
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCameraOn, setIsCameraOn] = useState(false);
@@ -51,8 +52,25 @@ export default function LessonDetail() {
   const [isSpeakerOn, setIsSpeakerOn] = useState(true);
   const [callSeconds, setCallSeconds] = useState(0);
 
+  const callStartRef = useRef(0);
+  const hasEndedRef = useRef(false);
+
+  const finishCall = useCallback(() => {
+    if (hasEndedRef.current || !lesson) return;
+    hasEndedRef.current = true;
+
+    posthog?.capture("lesson_call_ended", {
+      lesson_id: lesson.id,
+      language_id: lesson.languageId,
+      duration_seconds: Math.round((Date.now() - callStartRef.current) / 1000),
+    });
+  }, [lesson]);
+
   useEffect(() => {
     if (!lesson) return;
+
+    callStartRef.current = Date.now();
+    hasEndedRef.current = false;
 
     posthog?.capture("lesson_call_started", {
       lesson_id: lesson.id,
@@ -60,25 +78,26 @@ export default function LessonDetail() {
     });
 
     const interval = setInterval(() => setCallSeconds((seconds) => seconds + 1), 1000);
-    return () => clearInterval(interval);
-  }, [lesson]);
+    return () => {
+      clearInterval(interval);
+      finishCall();
+    };
+  }, [lesson, finishCall]);
 
   const endCall = () => {
-    if (lesson) {
-      posthog?.capture("lesson_call_ended", {
-        lesson_id: lesson.id,
-        language_id: lesson.languageId,
-        duration_seconds: callSeconds,
-      });
+    finishCall();
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/(tabs)/learn");
     }
-    router.back();
   };
 
   if (!lesson) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.neutral.background }}>
         <View className="flex-row items-center px-6 pt-4">
-          <BackButton />
+          <BackButton fallbackHref="/(tabs)/learn" />
         </View>
         <View className="flex-1 items-center justify-center px-6">
           <Text className="body-medium text-text-secondary!">Lesson not found.</Text>
@@ -93,7 +112,7 @@ export default function LessonDetail() {
     <View style={{ flex: 1, backgroundColor: colors.neutral.background }}>
       <SafeAreaView edges={["top", "left", "right"]} style={{ flex: 1 }}>
         <View className="flex-row items-center px-6 pt-2">
-          <BackButton />
+          <BackButton fallbackHref="/(tabs)/learn" />
 
           <View className="ml-3 flex-1">
             <Text className="heading-4 font-poppins-semibold!" numberOfLines={1}>
@@ -160,14 +179,9 @@ export default function LessonDetail() {
               ) : null}
             </View>
 
-            <TouchableOpacity
-              accessibilityRole="button"
-              accessibilityLabel="Play phrase audio"
-              hitSlop={6}
-              className="h-9 w-9 items-center justify-center rounded-full bg-surface"
-            >
+            <View className="h-9 w-9 items-center justify-center rounded-full bg-surface">
               <Ionicons name="volume-high" size={18} color={colors.brand.deepPurple} />
-            </TouchableOpacity>
+            </View>
           </View>
 
           <View className="mt-6 flex-row justify-between px-2">
