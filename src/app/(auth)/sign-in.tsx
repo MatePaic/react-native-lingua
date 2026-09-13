@@ -12,6 +12,7 @@ import { SocialAuthOptions } from "@/components/SocialAuthOptions";
 import { VerificationModal } from "@/components/VerificationModal";
 import { colors } from "@/constants/theme";
 import { clerkErrorMessage, navigateAfterAuth } from "@/lib/clerk";
+import { posthog } from "@/lib/posthog";
 
 export default function SignIn() {
   const { signIn, fetchStatus } = useSignIn();
@@ -42,6 +43,7 @@ export default function SignIn() {
 
     if (signIn.status === "complete") {
       await signIn.finalize({ navigate: navigateAfterAuth });
+      posthog?.capture("sign_in_completed");
     }
   };
 

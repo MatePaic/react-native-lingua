@@ -8,6 +8,7 @@ import { PrimaryButton } from "@/components/PrimaryButton";
 import { SpeechBubble } from "@/components/SpeechBubble";
 import { images } from "@/constants/images";
 import { colors } from "@/constants/theme";
+import { posthog } from "@/lib/posthog";
 
 export default function Onboarding() {
   const { isLoaded, isSignedIn } = useAuth();
@@ -75,7 +76,13 @@ export default function Onboarding() {
           />
         </View>
 
-        <PrimaryButton label="Get Started" onPress={() => router.push("/sign-up")} />
+        <PrimaryButton
+          label="Get Started"
+          onPress={() => {
+            posthog?.capture("onboarding_started");
+            router.push("/sign-up");
+          }}
+        />
       </ScrollView>
     </SafeAreaView>
   );

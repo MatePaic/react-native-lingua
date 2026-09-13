@@ -10,6 +10,7 @@ import { colors } from "@/constants/theme";
 import { getLanguageById } from "@/data/languages";
 import { getLessonsByLanguage } from "@/data/lessons";
 import { getUnitById } from "@/data/units";
+import { posthog } from "@/lib/posthog";
 import { useLanguageStore } from "@/store/language-store";
 import type { LanguageId } from "@/types/learning";
 
@@ -172,7 +173,14 @@ export default function Home() {
             <TouchableOpacity
               accessibilityRole="button"
               activeOpacity={0.9}
-              onPress={() => router.push("/(tabs)/learn")}
+              onPress={() => {
+                posthog?.capture("learning_continued", {
+                  language_id: selectedLanguageId,
+                  ...(currentLesson ? { lesson_id: currentLesson.id } : {}),
+                  ...(currentUnit ? { unit_id: currentUnit.id } : {}),
+                });
+                router.push("/(tabs)/learn");
+              }}
               className="mt-4 self-start rounded-full bg-background px-6 py-2.5"
             >
               <Text className="font-poppins-semibold text-body-md text-deep-purple">Continue</Text>
@@ -219,7 +227,13 @@ export default function Home() {
         <TouchableOpacity
           accessibilityRole="button"
           activeOpacity={0.85}
-          onPress={() => router.push("/(tabs)/ai-teacher")}
+          onPress={() => {
+            posthog?.capture("ai_teacher_opened", {
+              entry_point: "home",
+              language_id: selectedLanguageId,
+            });
+            router.push("/(tabs)/ai-teacher");
+          }}
           className="mt-4 flex-row items-center rounded-3xl bg-bubble-mint p-4"
         >
           <View className="flex-1">
