@@ -60,4 +60,13 @@ export const images = {
     italian: flagItalian,
     portuguese: flagPortuguese,
   } satisfies Record<LanguageId, number>,
+  /**
+   * No bundled illustrations exist yet for unit/lesson artwork (see
+   * AGENTS.md's Image Rule), so these hotlink deterministic Picsum photos
+   * keyed by id — same id always resolves to the same image.
+   */
+  placeholders: {
+    unitCover: (unitId: string) => `https://picsum.photos/seed/${unitId}/800/450`,
+    lessonThumbnail: (lessonId: string) => `https://picsum.photos/seed/${lessonId}/120/120`,
+  },
 } as const;

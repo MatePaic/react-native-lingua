@@ -50,7 +50,7 @@ export default function LanguageSelection() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.neutral.background }}>
       <View className="flex-row items-center px-6 pt-4">
-        <BackButton />
+        <BackButton fallbackHref={selectedLanguageId ? "/(tabs)/home" : undefined} />
         <Text className="heading-3 flex-1 text-center font-poppins-semibold!">
           Choose a language
         </Text>

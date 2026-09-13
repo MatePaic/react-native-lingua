@@ -108,11 +108,18 @@ export default function Home() {
       >
         {/* Header */}
         <View className="flex-row items-center">
-          <Image
-            source={language.flag}
-            contentFit="cover"
-            style={{ width: 44, height: 44, borderRadius: 22 }}
-          />
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="Change language"
+            hitSlop={8}
+            onPress={() => router.push("/language-selection")}
+          >
+            <Image
+              source={language.flag}
+              contentFit="cover"
+              style={{ width: 44, height: 44, borderRadius: 22 }}
+            />
+          </TouchableOpacity>
           <Text className="heading-4 ml-3 flex-1" numberOfLines={1}>
             {greeting}, {firstName}! 👋
           </Text>
