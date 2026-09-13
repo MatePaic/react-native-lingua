@@ -50,6 +50,56 @@ export const units: Unit[] = [
     description: "Say hello and count in Japanese.",
     icon: "👋",
   },
+
+  // Korean
+  {
+    id: "ko-u1",
+    languageId: "korean",
+    order: 1,
+    title: "Everyday Essentials",
+    description: "Greet people, talk about your day, and order at a café.",
+    icon: "☕",
+  },
+
+  // German
+  {
+    id: "de-u1",
+    languageId: "german",
+    order: 1,
+    title: "Everyday Essentials",
+    description: "Greet people, talk about your day, and order at a café.",
+    icon: "☕",
+  },
+
+  // Chinese
+  {
+    id: "zh-u1",
+    languageId: "chinese",
+    order: 1,
+    title: "Everyday Essentials",
+    description: "Greet people, talk about your day, and order at a café.",
+    icon: "☕",
+  },
+
+  // Italian
+  {
+    id: "it-u1",
+    languageId: "italian",
+    order: 1,
+    title: "Everyday Essentials",
+    description: "Greet people, talk about your day, and order at a café.",
+    icon: "☕",
+  },
+
+  // Portuguese
+  {
+    id: "pt-u1",
+    languageId: "portuguese",
+    order: 1,
+    title: "Everyday Essentials",
+    description: "Greet people, talk about your day, and order at a café.",
+    icon: "☕",
+  },
 ];
 
 export const getUnitsByLanguage = (languageId: string) =>
